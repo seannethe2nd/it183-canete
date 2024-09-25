@@ -1,0 +1,25 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+My Posts
+{% endblock %}
+
+{% block content %}
+<h1>My Posts</h1>
+
+<div class="my-posts-container">
+    {% for post in posts %}
+    <div class="post-card">
+        <h3>{{ post.title }}</h3>
+        <div class="post-actions">
+            <a href="{% url 'edit_post' post.pk %}" class="btn edit-btn">Edit</a>
+            <a href="{% url 'delete_post' post.pk %}" class="btn delete-btn">Delete</a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="no-posts-message">
+        <p>You haven't posted anything yet.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

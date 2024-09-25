@@ -1,0 +1,76 @@
+{% extends 'blog/base.html' %}
+{% load custom_filters %}
+
+{% block title %}
+Blog Posts
+{% endblock %}
+
+{% block content %}
+<h1>Blog Posts</h1>
+
+<!-- Trigger the modal with this button -->
+<button id="openModalBtn">Create New Blog Post</button>
+
+<!-- Modal Structure -->
+<div id="blogModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2>Create a New Blog Post</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create Blog Post</button>
+        </form>
+    </div>
+</div>
+
+<!-- Filter buttons -->
+<div>
+    <a href="?filter=all" class="{% if filter_type == 'all' %}active{% endif %}">All Posts</a> |
+    <a href="?filter=my_posts" class="{% if filter_type == 'my_posts' %}active{% endif %}">My Posts</a>
+</div>
+
+<!-- Blog posts list -->
+<ul class="blog-posts">
+    {% for post in posts %}
+    <li class="blog-post">
+        <h3><a href="{% url 'blog_detail' post.pk %}">{{ post.title }}</a></h3>
+        <p>by {{ post.author.username }}</p>
+        <div class="post-meta">
+            <span>Posted on: {{ post.created_at|date:"Y-m-d" }}</span>
+           
+        </div>
+    </li>
+    {% empty %}
+    <li>No blog posts available.</li>
+    {% endfor %}
+</ul>
+<script>
+    // Get the modal element
+    var modal = document.getElementById('blogModal');
+
+    // Get the button that opens the modal
+    var openModalBtn = document.getElementById('openModalBtn');
+
+    // Get the <span> element that closes the modal
+    var closeBtn = document.getElementsByClassName('close-btn')[0];
+
+    // When the user clicks the button, open the modal
+    openModalBtn.onclick = function() {
+        modal.style.display = 'block';
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+</script>
+
+{% endblock %}

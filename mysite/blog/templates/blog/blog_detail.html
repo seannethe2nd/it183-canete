@@ -1,0 +1,138 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}
+{{ post.title }}
+{% endblock %}
+
+{% block content %}
+<h1>{{ post.title }}</h1>
+<p>{{ post.content }}</p>
+
+
+
+<!-- Tally of reviews based on rating with progress bars -->
+<div class="review-tally">
+    <h3>Review Summary</h3>
+    <!-- Display the average rating -->
+
+    {% if average_rating %}
+        <div class="average-rating">
+            <strong>Average Rating: {{ average_rating }}/5</strong>
+        </div>
+    {% endif %}
+    <ul>
+        {% for tally in review_tally %}
+        <li>
+            <span>{{ tally.rating }} Stars:</span>
+            <div class="progress-bar-container">
+                <div class="progress-bar" 
+                    style="width: {{ tally.percentage }}%;">
+                </div>
+            </div>
+            <span class="progress-count">{{ tally.star_count }} reviews</span>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Reviews List -->
+<h2>Reviews</h2>
+<div class="reviews-list">
+    {% for review in reviews %}
+    <div class="review">
+        <div class="review-header">
+            <strong>{{ review.reviewer.username }}</strong> rated 
+            <span class="review-stars">
+                {% for i in "12345" %}
+                <i class="fa fa-star {% if i <= review.rating|stringformat:"d" %}checked{% endif %}"></i>
+                {% endfor %}
+            </span>
+        </div>
+        <p>{{ review.comment }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Add Review Modal -->
+{% if user.is_authenticated %}
+    <button id="openReviewModalBtn">Add Review</button>
+
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Add a Review</h2>
+            <form method="post" action="">
+                {% csrf_token %}
+                
+                <!-- Star Rating -->
+                <div class="form-group">
+                    <label for="id_rating">Rating:</label>
+                    <div class="star-rating">
+                        <input type="hidden" id="id_rating" name="rating" value="0">
+                        <span class="fa fa-star" data-value="1"></span>
+                        <span class="fa fa-star" data-value="2"></span>
+                        <span class="fa fa-star" data-value="3"></span>
+                        <span class="fa fa-star" data-value="4"></span>
+                        <span class="fa fa-star" data-value="5"></span>
+                    </div>
+                </div>
+
+                <!-- Comment Input -->
+                <div class="form-group">
+                    <label for="id_comment">Comment:</label>
+                    {{ form.comment }}
+                </div>
+
+                <button type="submit" class="submit-btn">Submit Review</button>
+            </form>
+        </div>
+    </div>
+{% else %}
+    <a href="{% url 'login' %}">Login to add a review</a>
+{% endif %}
+
+
+
+<script>
+    // Modal functionality
+    var reviewModal = document.getElementById('reviewModal');
+    var openModalBtn = document.getElementById('openReviewModalBtn');
+    var closeBtn = document.getElementsByClassName('close-btn')[0];
+
+    openModalBtn.onclick = function() {
+        reviewModal.style.display = 'block';
+    }
+
+    closeBtn.onclick = function() {
+        reviewModal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == reviewModal) {
+            reviewModal.style.display = 'none';
+        }
+    }
+
+    // Interactive Star Rating
+    const stars = document.querySelectorAll('.fa-star');
+    const ratingInput = document.getElementById('id_rating');
+
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const value = this.getAttribute('data-value');
+            ratingInput.value = value;  // Set hidden input value
+
+            // Highlight stars based on the selected rating
+            stars.forEach(s => {
+                if (s.getAttribute('data-value') <= value) {
+                    s.classList.add('checked');
+                } else {
+                    s.classList.remove('checked');
+                }
+            });
+        });
+    });
+</script>
+
+
+{% endblock %}
