@@ -1,7 +1,8 @@
 from django import forms
-from .models import Review, BlogPost
+from .models import Review, BlogPost, GalleryImage
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.forms import modelformset_factory
 
 
 class ReviewForm(forms.ModelForm):
@@ -31,4 +32,13 @@ class UserRegisterForm(UserCreationForm):
 class BlogPostForm(forms.ModelForm):
     class Meta:
         model = BlogPost
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'main_image']  # Include the main image field
+
+class GalleryImageForm(forms.ModelForm):
+    class Meta:
+        model = GalleryImage
+        fields = ['image', 'caption']
+
+# Create a formset for GalleryImageForm
+GalleryImageFormSet = modelformset_factory(GalleryImage, form=GalleryImageForm, extra=3)  # Set 'extra' to how many images you'd like to display initially
+

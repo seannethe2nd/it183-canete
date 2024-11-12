@@ -48,8 +48,6 @@ nav ul li a:hover {
     padding: 40px;
     background-color: #ffffff; /* White background */
     border-radius: 10px;
-    margin: 40px auto;
-    max-width: 900px;
     height: 100vh;
     overflow-y: auto;
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
@@ -527,11 +525,13 @@ h1 {
 .register-form {
     background-color: #ffffff;
     padding: 20px;
+    padding-right: 40px;
     border-radius: 10px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 400px;
     margin: 20px auto;
-    text-align: center;
+    text-align: left;
+    justify-content: center;
 }
 
 /* Style the input fields */
@@ -568,7 +568,8 @@ h1 {
     font-size: 16px;
     font-weight: bold;
     transition: background-color 0.3s ease;
-    width: 100%;
+    margin-left: auto;
+    display: flex;
 }
 
 .register-form button[type="submit"]:hover {
@@ -592,3 +593,60 @@ h1 {
     color: white;
 }
 
+.card-img {
+    width: 100%;              /* Make the image take the full width of the container */
+    height: 300px;            /* Limit the height to 300px */
+    max-width: 400px;         /* Limit the width to 400px */
+    object-fit: cover;        /* Ensure the image covers the container without distortion */
+    object-position: center;  /* Center the image within the container */
+}
+.truncate-text {
+    white-space: nowrap;       /* Prevents text from wrapping to the next line */
+    overflow: hidden;          /* Hides any text that overflows the container */
+    text-overflow: ellipsis;   /* Adds an ellipsis (...) at the end of the truncated text */
+}
+
+.truncate-multiline {
+    display: -webkit-box;         /* Required for multi-line truncation */
+    -webkit-line-clamp: 3;        /* Limits text to 3 lines */
+    -webkit-box-orient: vertical; /* Required for multi-line truncation */
+    overflow: hidden;             /* Hides overflow text */
+    text-overflow: ellipsis;      /* Adds an ellipsis at the end of the truncated text */
+}
+
+/* Modal Background */
+#blogModal {
+    display: none;   
+    position: absolute;              /* Hidden by default */
+    z-index: 1050;                 /* Sits on top of other content */
+    left: 0;
+    top: 0;
+    width: 100%;                   /* Full width */
+    height: 100%;                  /* Full height */
+    overflow: auto;                /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 10% auto;              /* Centered vertically and horizontally */
+    padding: 20px;
+    width: 80%;                    /* Width of the modal (adjust as needed) */
+    max-width: 1000px;              /* Maximum width of the modal */
+    max-height: 90vh;              /* Maximum height of the modal */
+    overflow-y: auto;              /* Enable vertical scroll if content exceeds height */
+    border-radius: 8px;            /* Rounded corners */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Soft shadow */
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+}

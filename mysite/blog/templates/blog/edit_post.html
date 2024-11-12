@@ -5,10 +5,59 @@ Edit Post
 {% endblock %}
 
 {% block content %}
-<h1>Edit Post: {{ post.title }}</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Changes</button>
-</form>
+<div class="container">
+    <h1 class="mb-4">Edit Post: {{ post.title }}</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Main Image Preview and Upload -->
+        <div class="mb-4">
+            <h5>Main Image</h5>
+            {% if post.main_image %}
+                <img src="{{ post.main_image.url }}" class="img-fluid mb-2" style="max-height: 200px; object-fit: cover;" alt="Main Image Preview">
+            {% else %}
+                <p>No main image available.</p>
+            {% endif %}
+            {{ form.main_image.label }}: {{ form.main_image }}
+        </div>
+
+        <!-- Gallery Images Preview and Upload -->
+        <div class="mb-4">
+            <h5>Gallery Images</h5>
+            <div class="row">
+                {% for image in gallery_images %}
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <img src="{{ image.image.url }}" class="card-img-top" alt="Gallery Image Preview" style="height: 150px; object-fit: cover;">
+                            <div class="card-body p-2">
+                                <p class="card-text">{{ image.caption }}</p>
+                                <a href="{% url 'remove_gallery_image' image.pk %}" class="btn btn-outline-danger btn-sm float-end">Remove</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted">No gallery images available.</p>
+                {% endfor %}
+            </div>
+            <!-- Input for Adding New Gallery Images -->
+            <label for="id_gallery_images">Add New Gallery Images</label>
+            <input type="file" name="gallery_images" id="id_gallery_images" multiple>
+        </div>
+
+        <!-- Form Fields and Submit Button -->
+        <!-- Title Field -->
+        <div class="form-group">
+            {{ form.title.label_tag }}
+            {{ form.title }}
+        </div>
+
+        <!-- Content Field -->
+        <div class="form-group">
+            {{ form.content.label_tag }}
+            {{ form.content }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+</div>
 {% endblock %}

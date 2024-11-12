@@ -5,16 +5,71 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{ post.title }}</h1>
-<p>{{ post.content }}</p>
+<div class="container my-5">
+    <!-- Gallery Carousel -->
+    <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner rounded shadow-lg">
+            {% for image in post.gallery_images.all %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img class="d-block w-100" src="{{ image.image.url }}" alt="{{ image.caption }}" style="height: 400px; object-fit: cover;">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-2 rounded">
+                    <p class="text-white">{{ image.caption }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <!-- Carousel Controls -->
+        <a class="carousel-control-prev" href="#galleryCarousel" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#galleryCarousel" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </a>
+    </div>
+    
+
+    <!-- Blog Title and Content -->
+    <div class="mt-4 text-center">
+        <h1 class="display-4">{{ post.title }}</h1>
+        <div class="d-flex justify-content-center align-items-center mt-3">
+            <button onclick="toggleLike({{ post.id }})" id="likeButton" class="btn {% if user_has_liked %}btn-danger{% else %}btn-outline-danger{% endif %} btn-lg">
+                <i class="fa fa-heart"></i> Like   <span id="like-count" class="ml-3 h4 text-muted">{{ like_count }}</span>
+            </button>
+          
+        </div>
+        <br>
+        <p class="lead text-muted">{{ post.content }}</p>
+    </div>
+
+    <!-- Like Button -->
+ 
+</div>
+
+<!-- Optional Bootstrap styling adjustments for carousel and other components -->
+<style>
+    .carousel-inner img {
+        max-height: 500px;
+        object-fit: cover;
+    }
+    .carousel-caption {
+        background: rgba(0, 0, 0, 0.5); /* Dark overlay for readability */
+        padding: 10px;
+        border-radius: 5px;
+    }
+    .lead {
+        font-size: 1.25rem;
+        font-weight: 300;
+    }
+</style>
+
 
 
 
 <!-- Tally of reviews based on rating with progress bars -->
 <div class="review-tally">
     <h3>Review Summary</h3>
-    <!-- Display the average rating -->
-
     {% if average_rating %}
         <div class="average-rating">
             <strong>Average Rating: {{ average_rating }}/5</strong>
@@ -25,9 +80,7 @@
         <li>
             <span>{{ tally.rating }} Stars:</span>
             <div class="progress-bar-container">
-                <div class="progress-bar" 
-                    style="width: {{ tally.percentage }}%;">
-                </div>
+                <div class="progress-bar" style="width: {{ tally.percentage }}%;"></div>
             </div>
             <span class="progress-count">{{ tally.star_count }} reviews</span>
         </li>
@@ -83,7 +136,7 @@
                     {{ form.comment }}
                 </div>
 
-                <button type="submit" class="submit-btn">Submit Review</button>
+                <button type="submit" class="submit-btn" name="review_form">Submit Review</button>
             </form>
         </div>
     </div>
@@ -92,8 +145,25 @@
 {% endif %}
 
 
-
 <script>
+    function toggleLike(postId) {
+        fetch(`/blog/${postId}/toggle-like/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                document.getElementById("like-count").innerText = data.like_count;
+                document.getElementById("likeButton").classList.toggle("btn-danger");
+                document.getElementById("likeButton").classList.toggle("btn-outline-danger");
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
     // Modal functionality
     var reviewModal = document.getElementById('reviewModal');
     var openModalBtn = document.getElementById('openReviewModalBtn');

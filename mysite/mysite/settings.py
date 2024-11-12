@@ -130,3 +130,6 @@ CSRF_TRUSTED_ORIGINS = [
     'https://cloudworkstations.dev/',
     'http://cloudworkstations.dev/',
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
