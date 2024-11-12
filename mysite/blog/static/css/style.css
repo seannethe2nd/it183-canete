@@ -298,7 +298,7 @@ textarea {
 
 .progress-bar {
     height: 100%;
-    background-color: #1976d2; /* Blue for the progress */
+    background-color: #1976d2 !important; /* Blue for the progress */
     width: 0%; /* Will be dynamically set in HTML */
     border-radius: 5px;
 }
@@ -617,7 +617,6 @@ h1 {
 /* Modal Background */
 #blogModal {
     display: none;   
-    position: absolute;              /* Hidden by default */
     z-index: 1050;                 /* Sits on top of other content */
     left: 0;
     top: 0;
